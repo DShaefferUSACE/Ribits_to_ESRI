@@ -5,4 +5,4 @@ ribits_funcions.py - functioning code
 
 draft_functions.py - incomplete/draft functions
 
-Draft ESRI REST Services are viewable here: https://ags02.sec.usace.army.mil/portal/home/webmap/viewer.html?webmap=9ba717c93caf4fb8abab682922294262
+Draft ESRI hosted feature services are viewable here: https://ags02.sec.usace.army.mil/portal/home/webmap/viewer.html?webmap=9ba717c93caf4fb8abab682922294262
