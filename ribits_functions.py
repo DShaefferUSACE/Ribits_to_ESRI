@@ -2,7 +2,10 @@
 ##  ------------------------------- ##
 ##     Ribits to ESRI AGOL/Portal   ##
 ##  ------------------------------- ##
-##     Written by: David Shaeffer   ##
+##    Written by:                   ##
+#     David Shaeffer                ##
+#     U.S. Army Corps of Engineers  ##
+#     South Atlantic Division       ##
 ##  ------------------------------- ##
 ##   Last Edited on: 08-21-2020     ##
 ##  ------------------------------- ##
