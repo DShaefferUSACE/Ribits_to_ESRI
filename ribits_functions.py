@@ -502,7 +502,6 @@ def createbanksafc(path):
     arcpy.RepairGeometry_management(os.path.abspath(path + "/BankServiceAreas"))
     return "Done creating bank service areas."
 
-
 ### EXAMPLE USAGE ###
 
 ### BANKS ####
