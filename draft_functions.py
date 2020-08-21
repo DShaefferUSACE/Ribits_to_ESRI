@@ -61,7 +61,7 @@ def createilfprogsafc(path):
             programdata = json.loads(data)
             for items in programdata['ITEMS']:
                 #make sure service area is not null
-                if str(items['SERVICE_AREAS']) != 'None':
+                if items['SERVICE_AREAS'] is not None:
                     #loop through all service areas (primary, secondary, etc.) and add the polygon to the feature class
                     for areas in items['SERVICE_AREAS']:
                         #if geometry exsists then proceed
@@ -122,7 +122,7 @@ def createilfprogsafc(path):
                             print("No ILF service area geometry for bank ID: " + str(items['BANK_ID']))  
         except Exception as e:
             print(e)
-            print("Could not create ILF service area geometry!")
+            print("Could not create ILF service area geometryn for bank ID: " +str(IDs))
     #remove any bad geometry - normally invalid polygons
     arcpy.RepairGeometry_management(os.path.abspath(path + "/ILFProgramServiceArea"))
     return "Done creating ILF service areas."

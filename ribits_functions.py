@@ -382,7 +382,7 @@ def createbanksafc(path):
     # i=10
     for items in bankdata['ITEMS']:
         #testing code
-        if items['BANK_ID'] == 4997:
+        # if items['BANK_ID'] == 4997:
             bankprogramIDs.append(items['BANK_ID'])
     # Set workspace
     arcpy.env.workspace = path
@@ -433,7 +433,7 @@ def createbanksafc(path):
             bankdata = json.loads(data)
             for items in bankdata['ITEMS']:
                     #make sure service area is not null
-                    if str(items['SERVICE_AREAS']) != 'None':
+                    if items['SERVICE_AREAS'] is not None:
                         #loop through all service areas (primary, secondary, etc.) and add the polygon to the feature class
                         for areas in items['SERVICE_AREAS']:
                             #if geometry exsists then proceed
@@ -509,7 +509,7 @@ def createbanksafc(path):
 
 ### BANKS ####
 # COMPPLETE add the bank service area to the file geodatabase
-# createbanksafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
+createbanksafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
 # COMPLETE create bankfoot print
 # createbankfootprintfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
