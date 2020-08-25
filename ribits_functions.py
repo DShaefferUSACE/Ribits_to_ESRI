@@ -230,14 +230,14 @@ def createbankfootprintfc(path):
                                 #handle the various geometry types
                                 if geometry['type']=='Polygon':
                                     features.append(arcpy.AsShape(geometry))
-                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankFootprints"), fieldnames) as cursor:
                                         cursor.insertRow(features)
                                 #multipolygon handler
                                 elif geometry['type']=='MultiPolygon':
                                     for polys in geometry['coordinates']:
                                         geojson = {'type': 'Polygon', 'coordinates': polys}
                                         features.append(arcpy.AsShape(geojson))
-                                        with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                        with arcpy.da.InsertCursor(os.path.abspath(path + "/BankFootprints"), fieldnames) as cursor:
                                             cursor.insertRow(features)
                                         #remove the geometry for the next polygon
                                         del features[-1]
