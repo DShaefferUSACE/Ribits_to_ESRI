@@ -68,17 +68,6 @@ def createilfprogsafc(path):
                         if 'GEOM' in areas.keys():
                             #load geometry as json
                             geometry = json.loads(areas['GEOM'])
-                            #handle the various geometry types
-                            if geometry['type']=='Polygon':
-                                geojson = geometry
-                            elif geometry['type']=='MultiPolygon':
-                                    geojson = { 
-                                        "type": "Polygon",
-                                        "coordinates": geometry['coordinates'][0]
-                                        }
-                            else:
-                                geojson = None 
-                                print(geometry['type'] + " geometry type!")
                             #create a empy list    
                             features = []
                             print("Going into feature extend")
@@ -111,13 +100,28 @@ def createilfprogsafc(path):
                             items['BANK_POCS'][0]['PHONE'] if items['BANK_POCS'] is not None and 'PHONE' in items['BANK_POCS'][0] else 'NONE', 
                             items['BANK_POCS'][0]['POC_TYPE'] if items['BANK_POCS'] is not None and 'POC_TYPE' in items['BANK_POCS'][0] else 'NONE'
                             ])
-                            if geojson is not None:
-                                #convert geojson to esri geometry
-                                polygon = arcpy.AsShape(geojson)
-                                features.append(polygon)
-                                #insert feature data into feature class as a row
-                                with arcpy.da.InsertCursor(os.path.abspath(path + "/ILFProgramServiceArea"), fieldnames) as cursor:
+                            #handle the various geometry types
+                            if geometry['type']=='Polygon':
+                                features.append(arcpy.AsShape(geometry))
+                                with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
                                     cursor.insertRow(features)
+                            #multipolygon handler
+                            elif geometry['type']=='MultiPolygon':
+                                for polys in geometry['coordinates']:
+                                    geojson = {'type': 'Polygon', 'coordinates': polys}
+                                    features.append(arcpy.AsShape(geojson))
+                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                        cursor.insertRow(features)
+                                    #remove the geometry for the next polygon
+                                    del features[-1]
+                            elif geometry['type']=='GeometryCollection':
+                                #TODO handle Geometry Collection
+                                pass
+                            elif geometry['type']=='LineString':
+                                #TODO handle LineString
+                                pass
+                            else:
+                                print(geometry['type'] + " geometry type for " + str(items['BANK_ID']))
                         else:
                             print("No ILF service area geometry for bank ID: " + str(items['BANK_ID']))  
         except Exception as e:
@@ -127,10 +131,12 @@ def createilfprogsafc(path):
     arcpy.RepairGeometry_management(os.path.abspath(path + "/ILFProgramServiceArea"))
     return "Done creating ILF service areas."
 
-createilfprogsafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
+# createilfprogsafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
-
-
+import json
+with open(r'D:\documents\Python\Ribits_to_ESRI\test.json') as json_data:
+            testjson = json.load(json_data)
+print(testjson)
 
 
 

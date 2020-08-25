@@ -197,17 +197,6 @@ def createbankfootprintfc(path):
                             if 'GEOM' in areas.keys() and areas['GEOM'] != 'null':
                                 #load geometry as json
                                 geometry = json.loads(areas['GEOM'])
-                                #handle the various geometry types
-                                if geometry['type']=='Polygon':
-                                    geojson = geometry
-                                elif geometry['type']=='MultiPolygon':
-                                        geojson = { 
-                                            "type": "Polygon",
-                                            "coordinates": geometry['coordinates'][0]
-                                            }
-                                else:
-                                   geojson = None 
-                                   print(geometry['type'] + " geometry type for " + str(items['BANK_ID']))
                                 #create a empy list    
                                 features = []
                                 features.extend([
@@ -238,13 +227,28 @@ def createbankfootprintfc(path):
                                 items['BANK_POCS'][0]['PHONE'] if items['BANK_POCS'] is not None and 'PHONE' in items['BANK_POCS'][0] else 'NONE', 
                                 items['BANK_POCS'][0]['POC_TYPE'] if items['BANK_POCS'] is not None and 'POC_TYPE' in items['BANK_POCS'][0] else 'NONE'
                                 ])
-                                if geojson is not None:
-                                    #convert geojson to esri geometry
-                                    polygon = arcpy.AsShape(geojson)
-                                    features.append(polygon)
-                                    #Add row to feature class
-                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankFootprints"), fieldnames) as cursor:
+                                #handle the various geometry types
+                                if geometry['type']=='Polygon':
+                                    features.append(arcpy.AsShape(geometry))
+                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
                                         cursor.insertRow(features)
+                                #multipolygon handler
+                                elif geometry['type']=='MultiPolygon':
+                                    for polys in geometry['coordinates']:
+                                        geojson = {'type': 'Polygon', 'coordinates': polys}
+                                        features.append(arcpy.AsShape(geojson))
+                                        with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                            cursor.insertRow(features)
+                                        #remove the geometry for the next polygon
+                                        del features[-1]
+                                elif geometry['type']=='GeometryCollection':
+                                    #TODO handle Geometry Collection
+                                    pass
+                                elif geometry['type']=='LineString':
+                                    #TODO handle LineString
+                                    pass
+                                else:
+                                   print(geometry['type'] + " geometry type for " + str(items['BANK_ID']))
                             else:
                                     print("No bank footprint geometry for bank ID: " + str(items['BANK_ID']))               
         except Exception as e:
@@ -382,7 +386,7 @@ def createbanksafc(path):
     # i=10
     for items in bankdata['ITEMS']:
         #testing code
-        # if items['BANK_ID'] == 4997:
+        # if items['BANK_ID'] == 777:
             bankprogramIDs.append(items['BANK_ID'])
     # Set workspace
     arcpy.env.workspace = path
@@ -436,27 +440,11 @@ def createbanksafc(path):
                     if items['SERVICE_AREAS'] is not None:
                         #loop through all service areas (primary, secondary, etc.) and add the polygon to the feature class
                         for areas in items['SERVICE_AREAS']:
+                            # print(areas)
                             #if geometry exsists then proceed
                             if 'GEOM' in areas.keys():
                                 #load geometry as json
                                 geometry = json.loads(areas['GEOM'])
-                                #handle the various geometry types
-                                if geometry['type']=='Polygon':
-                                    geojson = geometry
-                                elif geometry['type']=='MultiPolygon':
-                                        geojson = { 
-                                            "type": "Polygon",
-                                            "coordinates": geometry['coordinates'][0]
-                                            }
-                                elif geometry['type']=='GeometryCollection':
-                                    #TODO handle Geometry Collection
-                                    geojson = None
-                                elif geometry['type']=='LineString':
-                                    #TODO handle LineString
-                                    geojson = None
-                                else:
-                                   geojson = None 
-                                   print(geometry['type'] + " geometry type for " + str(items['BANK_ID']))
                                 #create a empy list    
                                 features = []
                                 # Add all the attributes
@@ -489,13 +477,28 @@ def createbanksafc(path):
                                 items['BANK_POCS'][0]['POC_TYPE'] if items['BANK_POCS'] is not None and 'POC_TYPE' in items['BANK_POCS'][0] else 'NONE'
                                 ])
 
-                                if geojson is not None:
-                                    # print(geojson)
-                                    #convert geojson to esri geometry
-                                    polygon = arcpy.AsShape(geojson)
-                                    features.append(polygon)
+                                #handle the various geometry types
+                                if geometry['type']=='Polygon':
+                                    features.append(arcpy.AsShape(geometry))
                                     with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
                                         cursor.insertRow(features)
+                                #multipolygon handler
+                                elif geometry['type']=='MultiPolygon':
+                                    for polys in geometry['coordinates']:
+                                        geojson = {'type': 'Polygon', 'coordinates': polys}
+                                        features.append(arcpy.AsShape(geojson))
+                                        with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                            cursor.insertRow(features)
+                                        #remove the geometry for the next polygon
+                                        del features[-1]
+                                elif geometry['type']=='GeometryCollection':
+                                    #TODO handle Geometry Collection
+                                    pass
+                                elif geometry['type']=='LineString':
+                                    #TODO handle LineString
+                                    pass
+                                else:
+                                   print(geometry['type'] + " geometry type for " + str(items['BANK_ID']))
                             else:
                                 print("No bank service area geometry for bank ID: " + str(items['BANK_ID']))               
         except Exception as e:
@@ -509,10 +512,10 @@ def createbanksafc(path):
 
 ### BANKS ####
 # COMPPLETE add the bank service area to the file geodatabase
-createbanksafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
+# createbanksafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
 # COMPLETE create bankfoot print
-# createbankfootprintfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
+createbankfootprintfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
 # COMPLETE add the ILF centroid to file geodatabase
 # createbankcentroidfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
