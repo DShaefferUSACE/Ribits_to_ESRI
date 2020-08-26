@@ -534,6 +534,3 @@ def createbanksafc(path):
 
 #upload the file geodatabase to ESRI AGOL/Portal
 # uploadtoportal('https://AGOLPORTURL/portal/', 'AGOLPORTALUSERNAME', 'AGOLPORTALPASSWORD', 'FEATURECLASSNAME', r'C:\PATH\Ribits.gdb')
-uploadtoportal("https://ags02.sec.usace.army.mil/portal/", "David.L.Shaeffer", "ArcGIS!#cwbi1234", 'Ribits', r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
-
-# GIS("https://ags02.sec.usace.army.mil/portal/", "David.L.Shaeffer", "ArcGIS!#cwbi1234")
