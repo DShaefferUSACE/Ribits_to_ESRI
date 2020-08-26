@@ -230,14 +230,14 @@ def createbankfootprintfc(path):
                                 #handle the various geometry types
                                 if geometry['type']=='Polygon':
                                     features.append(arcpy.AsShape(geometry))
-                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                    with arcpy.da.InsertCursor(os.path.abspath(path + "/BankFootprints"), fieldnames) as cursor:
                                         cursor.insertRow(features)
                                 #multipolygon handler
                                 elif geometry['type']=='MultiPolygon':
                                     for polys in geometry['coordinates']:
                                         geojson = {'type': 'Polygon', 'coordinates': polys}
                                         features.append(arcpy.AsShape(geojson))
-                                        with arcpy.da.InsertCursor(os.path.abspath(path + "/BankServiceAreas"), fieldnames) as cursor:
+                                        with arcpy.da.InsertCursor(os.path.abspath(path + "/BankFootprints"), fieldnames) as cursor:
                                             cursor.insertRow(features)
                                         #remove the geometry for the next polygon
                                         del features[-1]
@@ -515,7 +515,7 @@ def createbanksafc(path):
 # createbanksafc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
 # COMPLETE create bankfoot print
-createbankfootprintfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
+# createbankfootprintfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
 # COMPLETE add the ILF centroid to file geodatabase
 # createbankcentroidfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
@@ -534,3 +534,6 @@ createbankfootprintfc(r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
 
 #upload the file geodatabase to ESRI AGOL/Portal
 # uploadtoportal('https://AGOLPORTURL/portal/', 'AGOLPORTALUSERNAME', 'AGOLPORTALPASSWORD', 'FEATURECLASSNAME', r'C:\PATH\Ribits.gdb')
+uploadtoportal("https://ags02.sec.usace.army.mil/portal/", "David.L.Shaeffer", "ArcGIS!#cwbi1234", 'Ribits', r'C:\Users\k7rgrdls\Downloads\Ribits.gdb')
+
+# GIS("https://ags02.sec.usace.army.mil/portal/", "David.L.Shaeffer", "ArcGIS!#cwbi1234")
