@@ -55,8 +55,8 @@ def createbanksafc():
     # Add all the IDs to the dictionary
     for items in bankdata['ITEMS']:
         #testing code
-        # if items['BANK_ID'] == 777:
-        # if items['BANK_ID'] == 11 or items['BANK_ID'] == 777:
+        # if items['BANK_ID'] == 3005:
+        # if items['BANK_ID'] == 3005 or items['BANK_ID'] == 4365:
             bankprogramIDs.append(items['BANK_ID'])
     for IDs in bankprogramIDs:
         try:
@@ -72,56 +72,91 @@ def createbanksafc():
                     for areas in items['SERVICE_AREAS']:
                         #if geometry exsists then proceed
                         if 'GEOM' in areas.keys():
-                            #initiate feature
-                            feature = ogr.Feature(layer.GetLayerDefn())
-                            #set field values
-                            feature.SetField("BANKNAME", items['BANK_NAME'] if 'BANK_NAME' in items else 'NONE')
-                            feature.SetField("CHAIR", items['CHAIR'] if 'CHAIR' in items else 'NONE')
-                            feature.SetField("DISTRICT", items['DISTRICT'] if 'DISTRICT' in items  else 'NONE')
-                            feature.SetField("OFFICE", items['FIELD_OFFICE'] if 'FIELD_OFFICE' in items else 'NONE')
-                            feature.SetField("NOAAREGION", items['NOAA_FISHERIES_REGION'] if 'NOAA_FISHERIES_REGION' in items else 'NONE')
-                            feature.SetField("STATES", items['STATE_LIST'] if 'STATE_LIST' in items else 'NONE')
-                            feature.SetField("COUNTYS", items['COUNTY_LIST'] if 'COUNTY_LIST' in items else 'NONE')
-                            feature.SetField("PERMITNUM", items['PERMIT_NUMBER'] if 'PERMIT_NUMBER' in items else 'NONE')
-                            feature.SetField("YEAREST", items['YEAR_ESTABLISHED'] if 'YEAR_ESTABLISHED' in items else 0)
-                            feature.SetField("TOTALACRES", items['TOTAL_ACRES'] if 'TOTAL_ACRES' in items else 0)
-                            feature.SetField("BANKSTATUS", items['BANK_STATUS'] if 'BANK_STATUS' in items else 'NONE')
-                            feature.SetField("STATUSDATE", items['BANK_STATUS_DATE'] if 'BANK_STATUS_DATE' in items else '1/1/1700')
-                            feature.SetField("BANKTYPE", items['BANK_TYPE'] if 'BANK_TYPE' in items else 'NONE')
-                            feature.SetField("COMMENTS", items['COMMENTS'] if 'COMMENTS' in items else 'NONE')
-                            feature.SetField("RIBITSURL", items['RIBITS_URL_TO_BANK'] if 'RIBITS_URL_TO_BANK' in items else 'NONE')
-                            feature.SetField("SERVAREA", items['SERVICE_AREAS'][0]['SERVICE_AREA_NAME'] if items['SERVICE_AREAS'] is not None and 'SERVICE_AREA_NAME' in items['SERVICE_AREAS'][0] else 'NONE')
-                            feature.SetField("SPONSOR", items['BANK_SPONSORS'][0]['SPONSOR_NAME'] if items['BANK_SPONSORS'] is not None and 'SPONSOR_NAME' in items['BANK_SPONSORS'][0] else 'NONE')
-                            feature.SetField("MNGRFIRST", items['BANK_MANAGERS'][0]['FIRST_NAME'] if items['BANK_MANAGERS'] is not None and 'FIRST_NAME' in items['BANK_MANAGERS'][0] else 'NONE')
-                            feature.SetField("MNGRLAST", items['BANK_MANAGERS'][0]['LAST_NAME'] if items['BANK_MANAGERS'] is not None and 'LAST_NAME' in items['BANK_MANAGERS'][0] else 'NONE')
-                            feature.SetField("MNGRTITLE", items['BANK_MANAGERS'][0]['TITLE'] if items['BANK_MANAGERS'] is not None and 'TITLE' in items['BANK_MANAGERS'][0] else 'NONE')
-                            feature.SetField("MNGRPHONE", items['BANK_MANAGERS'][0]['PHONE'] if items['BANK_MANAGERS'] is not None and 'PHONE' in items['BANK_MANAGERS'][0] else 'NONE')
-                            feature.SetField("POCSFIRST", items['BANK_POCS'][0]['FIRST_NAME'] if items['BANK_POCS'] is not None and 'FIRST_NAME' in items['BANK_POCS'][0] else 'NONE')
-                            feature.SetField("POCSLAST", items['BANK_POCS'][0]['LAST_NAME'] if items['BANK_POCS'] is not None and 'LAST_NAME' in items['BANK_POCS'][0] else 'NONE')
-                            feature.SetField("POCSTITLE", items['BANK_POCS'][0]['TITLE'] if items['BANK_POCS'] is not None and 'TITLE' in items['BANK_POCS'][0] else 'NONE')
-                            feature.SetField("POCSPHONE", items['BANK_POCS'][0]['PHONE'] if items['BANK_POCS'] is not None and 'PHONE' in items['BANK_POCS'][0] else 'NONE')
-                            feature.SetField("POCSTYPE", items['BANK_POCS'][0]['POC_TYPE'] if items['BANK_POCS'] is not None and 'POC_TYPE' in items['BANK_POCS'][0] else 'NONE')
                             #load geometry as json
                             geometry = json.loads(areas['GEOM'])
                          #handle the various geometry types
                             if geometry['type']=='Polygon':
+                                # pass
                                #create geometry
-                                polygon = ogr.CreateGeometryFromJson(str(geometry))
+                               #initiate feature
+                                feature = ogr.Feature(layer.GetLayerDefn())
+                                #set field values
+                                feature.SetField("BANKNAME", items['BANK_NAME'] if 'BANK_NAME' in items and items['BANK_NAME'] is not None else 'NONE')
+                                feature.SetField("CHAIR", items['CHAIR'] if 'CHAIR' in items and items['CHAIR'] is not None else 'NONE')
+                                feature.SetField("DISTRICT", items['DISTRICT'] if 'DISTRICT' in items and items['DISTRICT'] is not None else 'NONE')
+                                feature.SetField("OFFICE", items['FIELD_OFFICE'] if 'FIELD_OFFICE' in items and items['FIELD_OFFICE'] is not None else 'NONE')
+                                feature.SetField("NOAAREGION", items['NOAA_FISHERIES_REGION'] if 'NOAA_FISHERIES_REGION' in items and items['NOAA_FISHERIES_REGION'] is not None else 'NONE')
+                                feature.SetField("STATES", items['STATE_LIST'] if 'STATE_LIST' in items and items['STATE_LIST'] is not None else 'NONE')
+                                feature.SetField("COUNTYS", items['COUNTY_LIST'] if 'COUNTY_LIST' in items and items['COUNTY_LIST'] is not None else 'NONE')
+                                feature.SetField("PERMITNUM", items['PERMIT_NUMBER'] if 'PERMIT_NUMBER' in items and items['PERMIT_NUMBER'] is not None else 'NONE')
+                                feature.SetField("YEAREST", items['YEAR_ESTABLISHED'] if 'YEAR_ESTABLISHED' in items and items['YEAR_ESTABLISHED'] is not None else 0)
+                                feature.SetField("TOTALACRES", items['TOTAL_ACRES'] if 'TOTAL_ACRES' in items and items['TOTAL_ACRES'] is not None else 0)
+                                feature.SetField("BANKSTATUS", items['BANK_STATUS'] if 'BANK_STATUS' in items and items['BANK_STATUS'] is not None else 'NONE')
+                                feature.SetField("STATUSDATE", items['BANK_STATUS_DATE'] if 'BANK_STATUS_DATE' in items and items['BANK_STATUS_DATE'] is not None else '1/1/1700')
+                                feature.SetField("BANKTYPE", items['BANK_TYPE'] if 'BANK_TYPE' in items and items['BANK_TYPE'] is not None else 'NONE')
+                                feature.SetField("COMMENTS", items['COMMENTS'] if 'COMMENTS' in items and items['COMMENTS'] is not None else 'NONE')
+                                feature.SetField("RIBITSURL", items['RIBITS_URL_TO_BANK'] if 'RIBITS_URL_TO_BANK' in items and items['RIBITS_URL_TO_BANK'] is not None else 'NONE')
+                                feature.SetField("SERVAREA", items['SERVICE_AREAS'][0]['SERVICE_AREA_NAME'] if items['SERVICE_AREAS'] is not None and 'SERVICE_AREA_NAME' in items['SERVICE_AREAS'][0] else 'NONE')
+                                feature.SetField("SPONSOR", items['BANK_SPONSORS'][0]['SPONSOR_NAME'] if items['BANK_SPONSORS'] is not None and 'SPONSOR_NAME' in items['BANK_SPONSORS'][0] else 'NONE')
+                                feature.SetField("MNGRFIRST", items['BANK_MANAGERS'][0]['FIRST_NAME'] if items['BANK_MANAGERS'] is not None and 'FIRST_NAME' in items['BANK_MANAGERS'][0] else 'NONE')
+                                feature.SetField("MNGRLAST", items['BANK_MANAGERS'][0]['LAST_NAME'] if items['BANK_MANAGERS'] is not None and 'LAST_NAME' in items['BANK_MANAGERS'][0] else 'NONE')
+                                feature.SetField("MNGRTITLE", items['BANK_MANAGERS'][0]['TITLE'] if items['BANK_MANAGERS'] is not None and 'TITLE' in items['BANK_MANAGERS'][0] else 'NONE')
+                                feature.SetField("MNGRPHONE", items['BANK_MANAGERS'][0]['PHONE'] if items['BANK_MANAGERS'] is not None and 'PHONE' in items['BANK_MANAGERS'][0] else 'NONE')
+                                feature.SetField("POCSFIRST", items['BANK_POCS'][0]['FIRST_NAME'] if items['BANK_POCS'] is not None and 'FIRST_NAME' in items['BANK_POCS'][0] else 'NONE')
+                                feature.SetField("POCSLAST", items['BANK_POCS'][0]['LAST_NAME'] if items['BANK_POCS'] is not None and 'LAST_NAME' in items['BANK_POCS'][0] else 'NONE')
+                                feature.SetField("POCSTITLE", items['BANK_POCS'][0]['TITLE'] if items['BANK_POCS'] is not None and 'TITLE' in items['BANK_POCS'][0] else 'NONE')
+                                feature.SetField("POCSPHONE", items['BANK_POCS'][0]['PHONE'] if items['BANK_POCS'] is not None and 'PHONE' in items['BANK_POCS'][0] else 'NONE')
+                                feature.SetField("POCSTYPE", items['BANK_POCS'][0]['POC_TYPE'] if items['BANK_POCS'] is not None and 'POC_TYPE' in items['BANK_POCS'][0] else 'NONE')
+
+                                geojson = {'type': 'Polygon', 'coordinates': geometry['coordinates']}
+                                
+                                polygon = ogr.CreateGeometryFromJson(str(geojson))
                                 feature.SetGeometry(polygon)
                                 layer.CreateFeature(feature)
                                 # Dereference the feature
-                                # feature = None
+                                feature = None
                             #multipolygon handler
                             elif geometry['type']=='MultiPolygon':
+                                
                                 for polys in geometry['coordinates']:
                                     #create geojson for each polygon
+                                    #initiate feature
+                                    feature = ogr.Feature(layer.GetLayerDefn())
+                                    #set field values
+                                    feature.SetField("BANKNAME", items['BANK_NAME'] if 'BANK_NAME' in items and items['BANK_NAME'] is not None else 'NONE')
+                                    feature.SetField("CHAIR", items['CHAIR'] if 'CHAIR' in items and items['CHAIR'] is not None else 'NONE')
+                                    feature.SetField("DISTRICT", items['DISTRICT'] if 'DISTRICT' in items and items['DISTRICT'] is not None else 'NONE')
+                                    feature.SetField("OFFICE", items['FIELD_OFFICE'] if 'FIELD_OFFICE' in items and items['FIELD_OFFICE'] is not None else 'NONE')
+                                    feature.SetField("NOAAREGION", items['NOAA_FISHERIES_REGION'] if 'NOAA_FISHERIES_REGION' in items and items['NOAA_FISHERIES_REGION'] is not None else 'NONE')
+                                    feature.SetField("STATES", items['STATE_LIST'] if 'STATE_LIST' in items and items['STATE_LIST'] is not None else 'NONE')
+                                    feature.SetField("COUNTYS", items['COUNTY_LIST'] if 'COUNTY_LIST' in items and items['COUNTY_LIST'] is not None else 'NONE')
+                                    feature.SetField("PERMITNUM", items['PERMIT_NUMBER'] if 'PERMIT_NUMBER' in items and items['PERMIT_NUMBER'] is not None else 'NONE')
+                                    feature.SetField("YEAREST", items['YEAR_ESTABLISHED'] if 'YEAR_ESTABLISHED' in items and items['YEAR_ESTABLISHED'] is not None else 0)
+                                    feature.SetField("TOTALACRES", items['TOTAL_ACRES'] if 'TOTAL_ACRES' in items and items['TOTAL_ACRES'] is not None else 0)
+                                    feature.SetField("BANKSTATUS", items['BANK_STATUS'] if 'BANK_STATUS' in items and items['BANK_STATUS'] is not None else 'NONE')
+                                    feature.SetField("STATUSDATE", items['BANK_STATUS_DATE'] if 'BANK_STATUS_DATE' in items and items['BANK_STATUS_DATE'] is not None else '1/1/1700')
+                                    feature.SetField("BANKTYPE", items['BANK_TYPE'] if 'BANK_TYPE' in items and items['BANK_TYPE'] is not None else 'NONE')
+                                    feature.SetField("COMMENTS", items['COMMENTS'] if 'COMMENTS' in items and items['COMMENTS'] is not None else 'NONE')
+                                    feature.SetField("RIBITSURL", items['RIBITS_URL_TO_BANK'] if 'RIBITS_URL_TO_BANK' in items and items['RIBITS_URL_TO_BANK'] is not None else 'NONE')
+                                    feature.SetField("SERVAREA", items['SERVICE_AREAS'][0]['SERVICE_AREA_NAME'] if items['SERVICE_AREAS'] is not None and 'SERVICE_AREA_NAME' in items['SERVICE_AREAS'][0] else 'NONE')
+                                    feature.SetField("SPONSOR", items['BANK_SPONSORS'][0]['SPONSOR_NAME'] if items['BANK_SPONSORS'] is not None and 'SPONSOR_NAME' in items['BANK_SPONSORS'][0] else 'NONE')
+                                    feature.SetField("MNGRFIRST", items['BANK_MANAGERS'][0]['FIRST_NAME'] if items['BANK_MANAGERS'] is not None and 'FIRST_NAME' in items['BANK_MANAGERS'][0] else 'NONE')
+                                    feature.SetField("MNGRLAST", items['BANK_MANAGERS'][0]['LAST_NAME'] if items['BANK_MANAGERS'] is not None and 'LAST_NAME' in items['BANK_MANAGERS'][0] else 'NONE')
+                                    feature.SetField("MNGRTITLE", items['BANK_MANAGERS'][0]['TITLE'] if items['BANK_MANAGERS'] is not None and 'TITLE' in items['BANK_MANAGERS'][0] else 'NONE')
+                                    feature.SetField("MNGRPHONE", items['BANK_MANAGERS'][0]['PHONE'] if items['BANK_MANAGERS'] is not None and 'PHONE' in items['BANK_MANAGERS'][0] else 'NONE')
+                                    feature.SetField("POCSFIRST", items['BANK_POCS'][0]['FIRST_NAME'] if items['BANK_POCS'] is not None and 'FIRST_NAME' in items['BANK_POCS'][0] else 'NONE')
+                                    feature.SetField("POCSLAST", items['BANK_POCS'][0]['LAST_NAME'] if items['BANK_POCS'] is not None and 'LAST_NAME' in items['BANK_POCS'][0] else 'NONE')
+                                    feature.SetField("POCSTITLE", items['BANK_POCS'][0]['TITLE'] if items['BANK_POCS'] is not None and 'TITLE' in items['BANK_POCS'][0] else 'NONE')
+                                    feature.SetField("POCSPHONE", items['BANK_POCS'][0]['PHONE'] if items['BANK_POCS'] is not None and 'PHONE' in items['BANK_POCS'][0] else 'NONE')
+                                    feature.SetField("POCSTYPE", items['BANK_POCS'][0]['POC_TYPE'] if items['BANK_POCS'] is not None and 'POC_TYPE' in items['BANK_POCS'][0] else 'NONE')
+
                                     geojson = {'type': 'Polygon', 'coordinates': polys}
                                     #create geometry from geojson
                                     polygon = ogr.CreateGeometryFromJson(str(geojson))
                                     feature.SetGeometry(polygon)
                                     layer.CreateFeature(feature)
                                     # Dereference the feature
-
+                                    feature = None
                             elif geometry['type']=='GeometryCollection':
                                 #TODO handle Geometry Collection
                                 pass
@@ -130,7 +165,7 @@ def createbanksafc():
                                 pass
                             else:
                                 print(geometry['type'] + " geometry type for " + str(items['BANK_ID']))
-                            feature = None
+                            # feature = None
                         else:
                             print("No bank service area geometry for bank ID: " + str(items['BANK_ID']))   
         except Exception as e:
